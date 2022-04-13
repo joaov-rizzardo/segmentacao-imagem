@@ -1,26 +1,81 @@
 void setup() {
-  size(1914, 903);
+  size(800, 800);
   background(255);
   noLoop();
 }
 
 void draw() {
-  PImage img = loadImage("mozis.png");
+  PImage img = loadImage("img.JPG");
   PImage aux = createImage(img.width, img.height, RGB);
 
   // GERA O HISTOGRAMA DA IMAGEM
   //genHist(img);
 
-  //aux = averageFilter(img, aux);
-  thresholdingFilter(img, aux);
+  aux = grayScale(img, aux);
+  aux = bright(img, aux);
+  aux = averageFilter(img, aux);
+  aux = thresholdingFilter(img, aux);
+  aux = clippImage(img, aux);
+}
+
+// APLICANDO A COR NATURAL DA IMAGEM
+PImage clippImage(PImage img, PImage aux) {
+  for (int y = 0; y < img.height; y++) {
+    for (int x = 0; x < img.width; x++) {
+      
+      int pos = y * img.width + x;
+      if(red(aux.pixels[pos]) == 255){
+        aux.pixels[pos] = color(img.pixels[pos]);
+      }else{
+        aux.pixels[pos] = color(0);
+      }
+    }
+  }
+
+  aux.save("image.jpg");
+
+  return aux;
+}
+// BRILHO
+PImage bright(PImage img, PImage aux) {
+  for (int y = 0; y < img.height; y++) {
+    for (int x = 0; x < img.width; x++) {
+      int pos = y * img.width + x;
+      float valor = red(img.pixels[pos])*1.5;
+      if (valor > 255) valor = 255;
+      else if (valor < 0) valor = 0;
+      aux.pixels[pos] = color(valor);
+    }
+  }
+
+  aux.save("bright.jpg");
+
+  return aux;
+}
+// ESCALA DE CINZA
+PImage grayScale(PImage img, PImage aux) {
+  for (int y = 0; y < img.height; y++) {
+    for (int x =0; x < img.width; x++) {
+      int pos = y*img.width + x;
+
+      float media = (red(img.pixels[pos]) + green(img.pixels[pos]) + blue(img.pixels[pos]))/3;
+      aux.pixels[pos] = color(media);
+
+      //aux.pixels[pos] = color(blue(img.pixels[pos]));
+    }
+  }
+
+  aux.save("grayScale.jpg");
+
+  return aux;
 }
 
 // FILTRO DE LIMIARIZAÇÃO
-void thresholdingFilter(PImage img, PImage aux) {
+PImage thresholdingFilter(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y*img.width + x;
-      if (blue(aux.pixels[pos]) > 120 && y < 550) {
+      if (blue(aux.pixels[pos]) < 60) {
         aux.pixels[pos] = color(255);
       } else {
         aux.pixels[pos] = color(0);
@@ -29,6 +84,8 @@ void thresholdingFilter(PImage img, PImage aux) {
   }
 
   aux.save("thresholdingFilter.jpg");
+  
+  return aux;
 }
 
 // FILTRO DE MÉDIA
@@ -59,7 +116,7 @@ PImage averageFilter(PImage img, PImage aux) {
   }
 
   aux.save("averageFilter.jpg");
-  
+
   return aux;
 }
 
