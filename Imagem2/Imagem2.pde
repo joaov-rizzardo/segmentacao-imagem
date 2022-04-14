@@ -13,7 +13,7 @@ void draw() {
 
   aux = grayScale(img, aux);
   aux = bright(img, aux);
-  aux = averageFilter(img, aux);
+//  aux = averageFilter(img, aux);
   aux = thresholdingFilter(img, aux);
   getDataInfo(aux);
   aux = clippImage(img, aux);
@@ -80,7 +80,7 @@ PImage bright(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y * img.width + x;
-      float valor = red(img.pixels[pos])*1.5;
+      float valor = red(img.pixels[pos])*2;
       if (valor > 255) valor = 255;
       else if (valor < 0) valor = 0;
       aux.pixels[pos] = color(valor);
@@ -100,7 +100,7 @@ PImage grayScale(PImage img, PImage aux) {
       float media = (red(img.pixels[pos]) + green(img.pixels[pos]) + blue(img.pixels[pos]))/3;
       aux.pixels[pos] = color(media);
 
-      //aux.pixels[pos] = color(blue(img.pixels[pos]));
+      //aux.pixels[pos] = color(red(img.pixels[pos]));
     }
   }
 
@@ -114,7 +114,7 @@ PImage thresholdingFilter(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y*img.width + x;
-      if (blue(aux.pixels[pos]) < 60) {
+      if (blue(aux.pixels[pos]) > 60 && y < (img.height - 40)) {
         aux.pixels[pos] = color(255);
       } else {
         aux.pixels[pos] = color(0);
@@ -132,7 +132,7 @@ PImage averageFilter(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y*img.width + x;
-      int jan = 2;
+      int jan = 6;
       int qtde = 0;
       float media = 0;
 
