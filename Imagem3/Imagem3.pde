@@ -11,8 +11,9 @@ void draw() {
   // GERA O HISTOGRAMA DA IMAGEM
   genHist(img);
 
-  aux = averageFilter(img, aux);
+  aux = grayScale(img, aux);
   aux = bright(img, aux);
+  aux = averageFilter(img, aux);
   aux = thresholdingFilter(img, aux);
   getDataInfo(aux);
   aux = clippImage(img, aux);
@@ -102,10 +103,10 @@ PImage grayScale(PImage img, PImage aux) {
     for (int x =0; x < img.width; x++) {
       int pos = y*img.width + x;
 
-      float media = (red(img.pixels[pos]) + green(img.pixels[pos]) + blue(img.pixels[pos]))/3;
-      aux.pixels[pos] = color(media);
+      //float media = (red(img.pixels[pos]) + green(img.pixels[pos]) + blue(img.pixels[pos]))/3;
+      //aux.pixels[pos] = color(media);
 
-      //aux.pixels[pos] = color(blue(img.pixels[pos]));
+      aux.pixels[pos] = color(blue(img.pixels[pos]));
     }
   }
 
@@ -119,9 +120,13 @@ PImage thresholdingFilter(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y*img.width + x;
-      if (blue(aux.pixels[pos]) > 60 && y < (aux.height - 40) && x < (aux.width - 30)) {
+      if (blue(aux.pixels[pos]) > 150 ) {
         aux.pixels[pos] = color(255);
       } else {
+        aux.pixels[pos] = color(0);
+      }
+
+      if ((x > aux.width - 150 && y > aux.height - 200) || x > aux.width - 30 || y < 35) {
         aux.pixels[pos] = color(0);
       }
     }
@@ -137,7 +142,7 @@ PImage averageFilter(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y*img.width + x;
-      int jan = 6;
+      int jan = 2;
       int qtde = 0;
       float media = 0;
 
@@ -148,7 +153,7 @@ PImage averageFilter(PImage img, PImage aux) {
 
           if (ny >= 0 && ny < aux.height && nx >= 0 && nx < aux.width) {
             int posAux = ny*aux.width+ nx;
-            media += red(img.pixels[posAux]);
+            media += red(aux.pixels[posAux]);
             qtde++;
           }
         }

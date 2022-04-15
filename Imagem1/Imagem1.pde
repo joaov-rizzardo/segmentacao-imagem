@@ -10,11 +10,11 @@ void draw() {
 
   // GERA O HISTOGRAMA DA IMAGEM
   //genHist(img);
-
-  aux = grayScale(img, aux);
-  aux = bright(img, aux);
+ 
   aux = averageFilter(img, aux);
+  aux = bright(img, aux);
   aux = thresholdingFilter(img, aux);
+  
   getDataInfo(aux);
   aux = clippImage(img, aux);
 }
@@ -30,6 +30,12 @@ void getDataInfo(PImage aux) {
     for (int x = 0; x < aux.width; x++) {
         int pos = y * aux.width + x;
         total++;
+        
+        if(red(groundTruth.pixels[pos]) > 200){
+          groundTruth.pixels[pos] = color(255);
+        }else{
+          groundTruth.pixels[pos] = color(0);
+        }
         
         if(red(aux.pixels[pos]) == red(groundTruth.pixels[pos])){
           positive++;
@@ -80,7 +86,7 @@ PImage bright(PImage img, PImage aux) {
   for (int y = 0; y < img.height; y++) {
     for (int x = 0; x < img.width; x++) {
       int pos = y * img.width + x;
-      float valor = red(img.pixels[pos])*1.5;
+      float valor = red(aux.pixels[pos])*1.5;
       if (valor > 255) valor = 255;
       else if (valor < 0) valor = 0;
       aux.pixels[pos] = color(valor);
